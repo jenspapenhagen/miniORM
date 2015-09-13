@@ -1,2 +1,2 @@
 # miniORM
-a non overkill ORM for PHP
+a non overkill ORM for smal/fast PHP Projects
