@@ -8,8 +8,6 @@ class Evaluator{
 	}
 
 
-
-	
 	function binaercheck($input) {
 		
 		$maxchar = 1;
@@ -31,6 +29,7 @@ class Evaluator{
 	
 
 	function stripper($input) {
+	    $output = '';
 		foreach (array(' ', '&nbsp;', '\n', '\t', '\r') as $strip){
 			$output = str_replace($strip, '', (string) $input);
 		}
@@ -107,25 +106,32 @@ class Evaluator{
 	function checkForLowercaseLetters($input) {
 		if( preg_match("/[^a-z]+/", $input) ) {
 			return true;
-		}return false;
+		}
+		
+		return false;
 	}
 
 	function checkForUppercaseLetters($input) {
 		if( preg_match("/[^A-Z]+/", $input) ) {
 			return true;
-		}return false;
+		}
+		
+		return false;
 	}
 
 	function checkForNumbers($input) {
 		if( is_numeric($input)) {
 			return true;
-		}return false;
+		}
+		
+		return false;
 	}
 
 	function checkForLetter($input) {
 		if( preg_match('/^[a-zA-ZÃ¤Ã¶Ã¼Ã„Ã–Ãœ ]+$/i', $input)) {
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -133,6 +139,7 @@ class Evaluator{
 		if( preg_match("/[^a-z0-9]+/", $input) ) {
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -140,6 +147,7 @@ class Evaluator{
 		if( preg_match("/[^A-Z0-9]+/", $input) ) {
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -147,6 +155,7 @@ class Evaluator{
 		if( preg_match("/[^A-F0-9]+/", $input) ) {
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -154,6 +163,7 @@ class Evaluator{
 		if( preg_match("/[^0-1]+/", $input) ) {
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -161,6 +171,7 @@ class Evaluator{
 		if( preg_match("/[^A-Za-z0-9_]+/", $input) ) {
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -168,6 +179,7 @@ class Evaluator{
 		if( preg_match("/[^A-Za-z0-9]+/", $input) ) {
 			return true;
 		}
+		
 		return false;
 	}
 
