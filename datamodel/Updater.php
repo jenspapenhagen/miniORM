@@ -16,16 +16,17 @@ class Updater {
     private function getAllExistingFilesInDir($pfad="entity"){
         $results_array = array();
         
-        if ($handle = opendir('$_SERVER["DOCUMENT_ROOT"] . "/datamodel/'.$pfad.'/.')) {
+        if ($handle = opendir('".$_SERVER["DOCUMENT_ROOT"]."/datamodel/".$pfad."/.') ) {
             while (false !== ($entry = readdir($handle))) {
             	if($pfad=="dataaccess"){
             		$pfad = "DAO";
             	}
                 if ($entry != "." and $entry != ".." and $entry != "Generic".ucfirst($pfad).".php" ) {
-                    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $entry);
+                    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $entry);//remove .php form filename
                     $makeStringLow = strtolower($withoutExt);
-                    if($pfad!="entity"){
-                    	$makeStringLow = mb_substr($makeStringLow, 0,-3);
+                    
+                    if($pfad == "DAO"){
+                    	$makeStringLow = mb_substr($makeStringLow, 0,-3); //remove DAO form filename
                     }
                     $output = $makeStringLow;
                     $results_array[] = $output;
@@ -83,12 +84,12 @@ class Updater {
                //build getter
                $output .= "public function get".ucfirst($setter)."(){"."\n";
                $output .= "return $this->".strtolower($setter)."; ";
-                $output .= "}";
+               $output .= "}";
                 
-                //build setter
-                $output .= "public function set".ucfirst($setter)."(".strtolower($setter)."){ ";
-                $output .= "    $this->".strtolower($setter)."= $".strtolower($setter)."; ";
-                $output .= "}";
+               //build setter
+               $output .= "public function set".ucfirst($setter)."(".strtolower($setter)."){ ";
+               $output .= "    $this->".strtolower($setter)."= $".strtolower($setter)."; ";
+               $output .= "}";
     
             }
                        
