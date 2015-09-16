@@ -1,7 +1,7 @@
 <?php
 class CSRF_Protect {
 
-    private $acceptGet = FALSE;
+    private $acceptGet = false;
 	private $timeout = 300; // Default timeout is 300 seconds (5 minutes)
 	
 	public function __construct($timeout=300){
@@ -11,7 +11,7 @@ class CSRF_Protect {
             }
 	}
 	
-	public function randomString() {
+	public function getRandomString() {
 	    $len = 32;
 	    $rString = '';
 	    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
@@ -25,7 +25,9 @@ class CSRF_Protect {
 	}
 	
 	protected function calculateHash() {
-	    $output = sha1(implode('', $_SESSION['csrf']));
+	    $options = ['cost' => 12];
+	    //old sha1(implode('', $_SESSION['csrf']));
+	    $output =  password_hash(implode('', $_SESSION['csrf']), PASSWORD_BCRYPT, $options);
 	    
 	    return $output;
 	}
@@ -34,7 +36,7 @@ class CSRF_Protect {
 	    // Create or overwrite the csrf entry in the seesion
 	    $_SESSION['csrf'] = array();
 	    $_SESSION['csrf']['time'] = time();
-	    $_SESSION['csrf']['salt'] = $this->randomString();
+	    $_SESSION['csrf']['salt'] = $this->getRandomString();
 	    $_SESSION['csrf']['sessid'] = session_id();
 	    $_SESSION['csrf']['ip'] = $_SERVER['REMOTE_ADDR'];
 	    
@@ -61,7 +63,7 @@ class CSRF_Protect {
 	public function getToken($timeout=NULL) {
 	    if (isset($_SESSION['csrf'])) {
 	        if (!$this->checkTimeout($timeout)) {
-	            return FALSE;
+	            return false;
 	        }
 	
 	        if (session_id()) {
@@ -75,7 +77,7 @@ class CSRF_Protect {
 	            }
 	        }
 	    }
-	    return FALSE;
+	    return false;
 	}
 	
 }

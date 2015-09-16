@@ -16,16 +16,16 @@ class Updater {
     private function getAllExistingFilesInDir($pfad="entity"){
         $results_array = array();
         
-        if ($handle = opendir('".$_SERVER["DOCUMENT_ROOT"]."/datamodel/".$pfad."/.') ) {
+        if ($handle = opendir($_SERVER["DOCUMENT_ROOT"] . '/datamodel/'.$pfad.'/' ) ) {
             while (false !== ($entry = readdir($handle))) {
-            	if($pfad=="dataaccess"){
+            	if ($pfad=="dataaccess"){
             		$pfad = "DAO";
             	}
                 if ($entry != "." and $entry != ".." and $entry != "Generic".ucfirst($pfad).".php" ) {
                     $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $entry);//remove .php form filename
                     $makeStringLow = strtolower($withoutExt);
                     
-                    if($pfad == "DAO"){
+                    if ($pfad == "DAO"){
                     	$makeStringLow = mb_substr($makeStringLow, 0,-3); //remove DAO form filename
                     }
                     $output = $makeStringLow;
@@ -45,7 +45,7 @@ class Updater {
         
         $sql = "select table_name from information_schema.tables where table_schema='".Constants::$databaseName."';";
         $result = $this->executeGenericStatement($sql);
-        if(empty($result)) {
+        if (empty($result)) {
             return NULL;
         }
         
@@ -57,7 +57,7 @@ class Updater {
         
         $sql = "select Column_name from Information_schema.columns where Table_name like '".$table."';";
         $result = $this->executeGenericStatement($sql);
-         if(empty($result)) {
+         if (empty($result)) {
             return NULL;
         }
         
@@ -75,7 +75,7 @@ class Updater {
                 //get all columnames as private var.
                 $output .= "     private $'.strtolower($setter).'";
                                 
-                if($index == 0){
+                if ($index == 0){
                     $output .= "public function ".$entry."(){";
                     $output .= '    parent::__construct("'.strtolower($entry).'","'.strtolower($setter).'"); ';
                     $output .= ' } ';
@@ -97,7 +97,7 @@ class Updater {
             $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
             
             //save the to file
-            if(!empty($file)){
+            if (!empty($file)){
                 file_put_contents($file, $output);
             }
         }
@@ -120,7 +120,7 @@ class Updater {
             $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entry).".php";
 
             //save the to file
-            if(!empty($file)){
+            if (!empty($file)){
                 file_put_contents($file, $output);
             }
     

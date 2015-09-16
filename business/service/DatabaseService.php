@@ -227,10 +227,10 @@ class DatabaseService{
 	}
 	
 	public function neuerPreisUndNeueVersionWennPreisGeaendert(Preis $preis) {
-		if(!is_null($preis->getProduktid())){
+		if (!is_null($preis->getProduktid())){
 			$produkt = $this->findProduktById($preis->getProduktid());
 			$alterpreis = $this->findeAktuellenPreisVonProdukt($produkt);
-			if($alterpreis->getPreis() != $preis->getPreis()){
+			if ($alterpreis->getPreis() != $preis->getPreis()){
 				$preis->setVersion($alterpreis->getVersion() + 1);
 				$preis->setPreisid(null);
 				$preis->setAngelegt(date('Y-m-d H:i:s'));

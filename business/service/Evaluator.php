@@ -11,7 +11,7 @@ class Evaluator{
 	function binaercheck($input) {
 		
 		$maxchar = 1;
-		if(!$this->checkForNumbers($input) || $this->MaxInputLimitCheck($input, $maxchar) == false || !is_null($input) || $input > 1 || $input < 0) {
+		if (!$this->checkForNumbers($input) || $this->MaxInputLimitCheck($input, $maxchar) == false || !is_null($input) || $input > 1 || $input < 0) {
 			return false;
 		}
 	
@@ -33,9 +33,9 @@ class Evaluator{
 		foreach (array(' ', '&nbsp;', '\n', '\t', '\r') as $strip){
 			$output = str_replace($strip, '', (string) $input);
 		}
-		if($input === ''){
+		if ($input === ''){
 			return false;
-		}else{
+		} else { 
 			return $output;
 		}
 
@@ -104,7 +104,7 @@ class Evaluator{
 
 	//check for input
 	function checkForLowercaseLetters($input) {
-		if( preg_match("/[^a-z]+/", $input) ) {
+		if ( preg_match("/[^a-z]+/", $input) ) {
 			return true;
 		}
 		
@@ -112,7 +112,7 @@ class Evaluator{
 	}
 
 	function checkForUppercaseLetters($input) {
-		if( preg_match("/[^A-Z]+/", $input) ) {
+		if ( preg_match("/[^A-Z]+/", $input) ) {
 			return true;
 		}
 		
@@ -120,7 +120,7 @@ class Evaluator{
 	}
 
 	function checkForNumbers($input) {
-		if( is_numeric($input)) {
+		if ( is_numeric($input)) {
 			return true;
 		}
 		
@@ -128,7 +128,7 @@ class Evaluator{
 	}
 
 	function checkForLetter($input) {
-		if( preg_match('/^[a-zA-ZÃ¤Ã¶Ã¼Ã„Ã–Ãœ ]+$/i', $input)) {
+		if ( preg_match('/^[a-zA-ZÃ¤Ã¶Ã¼Ã„Ã–Ãœ ]+$/i', $input)) {
 			return true;
 		}
 		
@@ -136,7 +136,7 @@ class Evaluator{
 	}
 
 	function checkForLowercaseLettersAndNumbers($input) {
-		if( preg_match("/[^a-z0-9]+/", $input) ) {
+		if ( preg_match("/[^a-z0-9]+/", $input) ) {
 			return true;
 		}
 		
@@ -144,7 +144,7 @@ class Evaluator{
 	}
 
 	function checkForUppercaseLettersAndNumbers($input) {
-		if( preg_match("/[^A-Z0-9]+/", $input) ) {
+		if ( preg_match("/[^A-Z0-9]+/", $input) ) {
 			return true;
 		}
 		
@@ -152,7 +152,7 @@ class Evaluator{
 	}
 
 	function checkForHexDec($input) {
-		if( preg_match("/[^A-F0-9]+/", $input) ) {
+		if ( preg_match("/[^A-F0-9]+/", $input) ) {
 			return true;
 		}
 		
@@ -160,7 +160,7 @@ class Evaluator{
 	}
 
 	function checkForBinary($input) {
-		if( preg_match("/[^0-1]+/", $input) ) {
+		if ( preg_match("/[^0-1]+/", $input) ) {
 			return true;
 		}
 		
@@ -168,7 +168,7 @@ class Evaluator{
 	}
 
 	function checkForLettersNumbersUnderscore($input) {
-		if( preg_match("/[^A-Za-z0-9_]+/", $input) ) {
+		if ( preg_match("/[^A-Za-z0-9_]+/", $input) ) {
 			return true;
 		}
 		
@@ -176,7 +176,7 @@ class Evaluator{
 	}
 
 	function checkForLettersNumbers($input) {
-		if( preg_match("/[^A-Za-z0-9]+/", $input) ) {
+		if ( preg_match("/[^A-Za-z0-9]+/", $input) ) {
 			return true;
 		}
 		
@@ -185,7 +185,7 @@ class Evaluator{
 
 	//lengths
 	function MinInputLimit($input,$minchar) {
-		if(strlen($input) < $minchar ){
+		if (strlen($input) < $minchar ){
 			return false;
 		}
 
@@ -193,7 +193,7 @@ class Evaluator{
 	}
 
 	function MaxInputLimit($input, $maxchar) {
-		if(strlen($input) > $maxchar ){
+		if (strlen($input) > $maxchar ){
 			return $this->cutToMaxInputLimit($input, $maxchar);//force to the right length
 		}
 
@@ -201,7 +201,7 @@ class Evaluator{
 	}
 	
 	function MaxInputLimitCheck($input, $maxchar) {
-		if(strlen($input) > $maxchar ){
+		if (strlen($input) > $maxchar ){
 			return false;
 		}
 	
@@ -220,7 +220,7 @@ class Evaluator{
 			return false;
 		}
 		$tmp = explode(".", $input);//parse date inpute 28.02.2015 in to $tmp[1]=28 $tmp[0]=02 $tmp[2]=2015
-		if(checkdate( $tmp[1], $tmp[0], $tmp[2]) == false){
+		if (checkdate( $tmp[1], $tmp[0], $tmp[2]) == false){
 			return false;
 		}
 
@@ -232,7 +232,7 @@ class Evaluator{
 			return false;
 		}
 		$tmp = explode("-", $input); //parse date inpute 02-28-2015 in to $tmp[1]=02 $tmp[0]=28 $tmp[2]=2015
-		if(checkdate( $tmp[0], $tmp[1], $tmp[2]) == false){
+		if (checkdate( $tmp[0], $tmp[1], $tmp[2]) == false){
 			return false;
 		}
 
@@ -246,7 +246,7 @@ class Evaluator{
 		$minchar = "4"; //0:01
 		$maxchar = "5"; //21:01
 
-		if($this->MinInputLimit($input, $minchar) == false and $this->MaxInputLimit($input, $maxchar) == false) {
+		if ($this->MinInputLimit($input, $minchar) == false and $this->MaxInputLimit($input, $maxchar) == false) {
 			return false;
 		}
 
@@ -263,7 +263,7 @@ class Evaluator{
 		$minchar = "1"; //0
 		$maxchar = "4"; //2100
 
-		if($this->MinInputLimit($input, $minchar) == false and $this->MaxInputLimit($input, $maxchar) == false ) {
+		if ($this->MinInputLimit($input, $minchar) == false and $this->MaxInputLimit($input, $maxchar) == false ) {
 			return false;
 		}
 
@@ -359,16 +359,16 @@ class Evaluator{
 
 	//human readable file size
 	function humanFileSize($size,$unit="") {
-		if( (!$unit and $size >= 1<<30) or $unit == "GB"){
+		if ( (!$unit and $size >= 1<<30) or $unit == "GB"){
 			$gb = number_format($size/(1<<30),2)."GB";
 			return $gb;
 		}
-		if( (!$unit and $size >= 1<<20) or $unit == "MB"){
+		if ( (!$unit and $size >= 1<<20) or $unit == "MB"){
 			$mb = number_format($size/(1<<20),2)."MB";
 			return $mb;
 		}
 		 
-		if( (!$unit and $size >= 1<<10) or $unit == "KB"){
+		if ( (!$unit and $size >= 1<<10) or $unit == "KB"){
 			$kb = number_format($size/(1<<10),2)."KB";
 			return $kb;
 		}

@@ -54,7 +54,7 @@ class EntityManager {
 		$this->findById .= Constants::$databaseName.".".$this->entityToManage->getTablename()." where ".$this->entityToManage->getIdcolumn()." = '";
 		if (!empty($result)) {
 			return $result[0];
-		}else{
+		} else { 
 			return NULL;
 		}
 	}
@@ -74,12 +74,12 @@ class EntityManager {
 		$entityID = $entity->{("get".ucfirst($entity->getIdcolumn()))}();
 		$preparedStatement= NULL;
 		
-		if($entityID != NULL){
+		if ($entityID != NULL){
 			$updateStatement = "update ".$entity->getTablename()." set ".$this->getEntityValuesAsCommaSeperatedUpdateString($entity)." where ".$entity->getIdcolumn()."='".$entityID."';";
 			$preparedStatement = $this->PDO->prepare($updateStatement);
 			$preparedStatement->execute();
 			return 0;
-		}else{
+		} else { 
 			$insertStatement = "insert into ".$entity->getTablename()." (".$this->tableColumns.") values (".$this->getEntityValuesAsCommaSeperatedString($entity).");";
 			$preparedStatement = $this->PDO->prepare($insertStatement);
 			$preparedStatement->execute();
@@ -95,9 +95,9 @@ class EntityManager {
 		$valuesAsString = "";
 		
 		foreach ($propertyArray as $property) {
-			if(empty($valuesAsString)) {
+			if (empty($valuesAsString)) {
 				$valuesAsString .= "'".$entity->{("get".ucfirst($property->getName()))}()."'";
-			}else{
+			} else { 
 				$valuesAsString .= ",'".$entity->{("get".ucfirst($property->getName()))}()."'";
 			}
 		}
@@ -110,9 +110,9 @@ class EntityManager {
 		$valuesAsString = "";
 	
 		foreach ($propertyArray as $property) {
-				if(empty($valuesAsString)) {
+				if (empty($valuesAsString)) {
 					$valuesAsString .= $property->getName()."='".$entity->{("get".ucfirst($property->getName()))}()."'";
-				}else{
+				} else { 
 					$valuesAsString .= ", ".$property->getName()."='".$entity->{("get".ucfirst($property->getName()))}()."'";
 				}
 		}
