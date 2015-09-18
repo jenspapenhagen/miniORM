@@ -75,40 +75,11 @@ class Updater {
         }
         
         $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
-        //del the last 3 lines
-        $output = file_get_contents($file);
-        $lines = file($file);
-        unset($lines[count($lines)-1]);
-        unset($lines[count($lines)-2]);
-        unset($lines[count($lines)-3]);
-        //save the to file
-        if (!empty($file)){
-            file_put_contents($file, $lines);
-        }
-        
-        //adding the new setter and getter to the file
-        $output = file_get_contents($file);
-        foreach ($this->givebackDeltaOfMissingCollonInEntity($this->getAllColumnNamesFormTable($entry),$this->getAllSetterFromEntry($entry)) as $missing){
-           
-                //build getter
-               $output .= "public function get".ucfirst($missing)."(){"."\n";
-               $output .= "return $this->".strtolower($missing)."; ";
-               $output .= "}";
-                
-               //build setter
-               $output .= "public function set".ucfirst($missing)."(".strtolower($missing)."){ ";
-               $output .= "    $this->".strtolower($missing)."= $".strtolower($missing)."; ";
-               $output .= "}";
-               
-        }
-        
-        $output .= "}";
-        $output .= "?>";
-        
-        //save the to file
-        if (!empty($file)){
-            file_put_contents($file, $output);
-        }
+        $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entry).".php";
+        rename($file, $backupfile);
+        unset($file);//delete file
+        $this->buildEntry();
+
     }
     
     
