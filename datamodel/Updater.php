@@ -76,7 +76,7 @@ class Updater {
         
         $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
         $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entry).".php";
-        rename($file, $backupfile);
+        copy($file, $backupfile);
         unset($file);//delete file
         $this->buildEntry();
 
