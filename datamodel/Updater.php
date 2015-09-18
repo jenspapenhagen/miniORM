@@ -1,19 +1,18 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
+//include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
+//include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
+//include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
 
 class Updater {
-
 
     private $PDO;
 
     
     public function Updater() {
-        $this->PDO = ConnectionProvider::getConnection();
+        //$this->PDO = ConnectionProvider::getConnection();
     }
     
-    private function getAllExistingFilesInDir($pfad="entity"){
+    public function getAllExistingFilesInDir($pfad="entity"){
         $results_array = array();
         
         if ($handle = opendir($_SERVER["DOCUMENT_ROOT"] . '/datamodel/'.$pfad.'/' ) ) {
@@ -40,7 +39,7 @@ class Updater {
     }
     
     
-    private function getAllTablenames(){
+    public function getAllTablenames(){
         $results_array = array();
         
         $sql = "select table_name from information_schema.tables where table_schema='".Constants::$databaseName."';";
@@ -52,7 +51,7 @@ class Updater {
         return $results_array;
      }
         
-    private function getAllColumnNamesFormTable($table){
+    public function getAllColumnNamesFormTable($table){
         $results_array = array();
         
         $sql = "select Column_name from Information_schema.columns where Table_name like '".$table."';";
@@ -63,8 +62,57 @@ class Updater {
         
         return $results_array;
     }
-
-    private function buildEntry(){
+    
+    
+    public function updateEntry($entry){
+        if(!$this->ExistEntry($entry)){
+            echo "Entry not found";
+            die();
+        }
+        if(count($this->givebackDeltaOfMissingCollonInEntity($this->getAllColumnNamesFormTable($entry),$this->getAllSetterFromEntry($entry))) < 1){
+            echo "no setter/getter are missing in this Entry";
+            die();
+        }
+        
+        $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
+        //del the last 3 lines
+        $output = file_get_contents($file);
+        $lines = file($file);
+        unset($lines[count($lines)-1]);
+        unset($lines[count($lines)-2]);
+        unset($lines[count($lines)-3]);
+        //save the to file
+        if (!empty($file)){
+            file_put_contents($file, $lines);
+        }
+        
+        //adding the new setter and getter to the file
+        $output = file_get_contents($file);
+        foreach ($this->givebackDeltaOfMissingCollonInEntity($this->getAllColumnNamesFormTable($entry),$this->getAllSetterFromEntry($entry)) as $missing){
+           
+                //build getter
+               $output .= "public function get".ucfirst($missing)."(){"."\n";
+               $output .= "return $this->".strtolower($missing)."; ";
+               $output .= "}";
+                
+               //build setter
+               $output .= "public function set".ucfirst($missing)."(".strtolower($missing)."){ ";
+               $output .= "    $this->".strtolower($missing)."= $".strtolower($missing)."; ";
+               $output .= "}";
+               
+        }
+        
+        $output .= "}";
+        $output .= "?>";
+        
+        //save the to file
+        if (!empty($file)){
+            file_put_contents($file, $output);
+        }
+    }
+    
+    
+    public function buildEntry(){
         $file="";
         foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir(), $this->getAllTablenames()) as $entry){
             $output = '<?php
@@ -94,8 +142,9 @@ class Updater {
             }
                        
             $output .= "}";
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
+            $output .= "?>";
             
+            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
             //save the to file
             if (!empty($file)){
                 file_put_contents($file, $output);
@@ -104,7 +153,7 @@ class Updater {
    
     }
     
-    private function buildDAO(){
+    public function buildDAO(){
         $file="";
         foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir($pfad="dataaccess"), $this->getAllTablenames()) as $entry){
             $output = '<?php
@@ -116,9 +165,9 @@ class Updater {
             $output .= ' } ';
     
             $output .= "}";
+            $output .= "?>";
             
             $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entry).".php";
-
             //save the to file
             if (!empty($file)){
                 file_put_contents($file, $output);
@@ -127,8 +176,48 @@ class Updater {
         }
         
     }
+    
+    public function ExistEntry($entry){
+        $filename = "entity/".ucfirst($entry).".php";
+        if (file_exists($filename)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function getAllSetterFromEntry($entry){
+        if(!$this->ExistEntry($entry)){
+            echo "Entry not found";
+            die();
+        }
+        $filename = "entity/".ucfirst($entry).".php";
         
-    private function givebackDeltaOfMissingEntity($array1, $array2){
+        $functionFinder = '/public function[\s\n]+(\S+)[\s\n]*\(/';
+        $match = array();
+        $output = array();
+        preg_match_all( $functionFinder , file_get_contents($filename) , $match );
+        //filter the function names out of it
+        foreach($match[1] as $key=> $m){
+            $removeFunction = str_replace('public function ', '', $m);
+            $removesetter = str_replace('set', '', $removeFunction);
+            $removegetter = str_replace('get', '', $removesetter);
+            if(($key % 2) == 0 and $key > 1){
+                array_push($output, strtolower($removegetter) );
+            }
+        }
+        
+               
+        return $output;
+    }
+    
+        
+    public function givebackDeltaOfMissingEntity($array1, $array2){
+        $result = array_diff($array1, $array2);
+    
+        return $result;
+    }
+    public function givebackDeltaOfMissingCollonInEntity($array1, $array2){
         $result = array_diff($array1, $array2);
     
         return $result;
@@ -144,3 +233,5 @@ class Updater {
 
         
 }
+$foo = new Updater;
+var_dump($foo->getAllSetterFromEntry('kategorie'));
