@@ -1,7 +1,7 @@
 <?php
-//include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
-//include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
-//include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
 
 class Updater {
 
@@ -178,7 +178,7 @@ class Updater {
     }
     
     public function ExistEntry($entry){
-        $filename = "entity/".ucfirst($entry).".php";
+        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
         if (file_exists($filename)) {
             return true;
         } else {
@@ -191,7 +191,7 @@ class Updater {
             echo "Entry not found";
             die();
         }
-        $filename = "entity/".ucfirst($entry).".php";
+        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
         
         $functionFinder = '/public function[\s\n]+(\S+)[\s\n]*\(/';
         $match = array();
