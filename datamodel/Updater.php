@@ -204,5 +204,3 @@ class Updater {
 
         
 }
-$foo = new Updater;
-var_dump($foo->getAllSetterFromEntry('kategorie'));

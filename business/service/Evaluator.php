@@ -20,9 +20,9 @@ class Evaluator{
 	
 	function emptycheck($input) {
 		if (empty($input)) {
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	
@@ -350,7 +350,7 @@ class Evaluator{
 
 	//make links clickable, open new tap
 	function makeItClick($input) {
-		$output = preg_replace('!(((f|ht)tp(s)?://)[-a-zA-ZÃ�Â°-Ã‘ï¿½Ã�ï¿½-Ã�Â¯()0-9@:%_+.~#?&;//=]+)!i', '<a href="$1" target="_blank">$1</a>', $input);
+		$output = preg_replace('*(f|ht)tps?://[A-Za-z0-9\./?=\+&%]+*', '<a href="$1" target="_blank">$1</a>', $input);
 		//force HTTPS
 		$output = str_replace( 'http://', 'https://', $output);
 		 
