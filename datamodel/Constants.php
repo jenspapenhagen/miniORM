@@ -1,6 +1,7 @@
 <?php
 
 class Constants {
+    public static $databaseDrviver = "mysql"; //replace with sqllite for using a slqlite database
 	public static $databaseName = "databankname";
 	public static $databaseHost = "localhost";
 	public static $databaseUser = "root";

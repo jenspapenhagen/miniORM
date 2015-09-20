@@ -128,8 +128,16 @@ class EntityManager {
 	}
 	
 	public function executeGenericStatement($statement) {
-		$preparedStatement = $this->PDO->prepare($statement);
-		$preparedStatement->execute();
+	    $statement = trim($statement);
+	    
+	    try {
+		      $preparedStatement = $this->PDO->prepare($statement);
+		      $preparedStatement->execute();
+		
+	    } catch (PDOException $e) {
+			echo "Execute of this SQL failed: ".$e->getMessage();
+			die();
+	    }
 	}
 	
 	public function getEntityToManage() {

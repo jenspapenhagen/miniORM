@@ -7,13 +7,32 @@ class ConnectionProvider {
 	
 	private function __construct() {
 		try {
-			self::$connection = new PDO("mysql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName, Constants::$databaseUser, Constants::$databasePass, $this->SQLoverSSL());
-			self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		    
+		    switch(Constants::$databaseDrviver) {
+		        case "sqlite":
+		            $connectionTyp = "sqlite:database.db'";
+		            break;
+		        case "mysql":
+		            $connectionTyp = 'mysql:host='.Constants::$databaseHost.';dbname='.Constants::$databaseName.' ';
+			        break;
+		        default:
+		            echo "Unsuportted DB Driver! Check the configuration in Constants.php";
+		            exit(1);
+		    }
+		    
+		    self::$connection = new PDO($connectionTyp, Constants::$databaseUser, Constants::$databasePass, $this->SQLoverSSL());
+		    
+			self::$connection->setAttribute = array(
+			    PDO::ATTR_PERSISTENT    =>ture, 
+			    PDO::ATTR_ERRMODE, 
+			    PDO::ERRMODE_EXCEPTION);
 		}catch (PDOException $e) {
 			echo "Connection failed: ".$e->getMessage();
 			die();
 		}
 	}
+	
+	
 	
 	public function setSSL($SQLoverSSL = false){
 	    $setSSL = '';
@@ -28,7 +47,6 @@ class ConnectionProvider {
 	   }
 	   
 	}
-	
 	
 	public static function getConnection() {
 		if (!self::$connection) {
