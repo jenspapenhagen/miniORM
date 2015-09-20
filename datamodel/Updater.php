@@ -9,7 +9,7 @@ class Updater {
 
     
     public function Updater() {
-        //$this->PDO = ConnectionProvider::getConnection();
+        $this->PDO = ConnectionProvider::getConnection();
     }
     
     public function getAllExistingFilesInDir($pfad="entity"){
@@ -201,6 +201,5 @@ class Updater {
 
         return $result;
     }
-
         
 }
