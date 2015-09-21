@@ -1,0 +1,14 @@
+Options -Indexes
+
+<FilesMatch "\.db$">
+	Order allow,deny
+	Deny from all
+</FilesMatch>
+
+<FilesMatch "\.inc$">
+	Order allow,deny
+	Deny from all
+</FilesMatch>
+
+order allow,deny
+allow from all

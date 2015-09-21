@@ -10,7 +10,7 @@ class ConnectionProvider {
 		    
 		    switch(Constants::$databaseDrviver) {
 		        case "sqlite":
-		            $connectionTyp = "sqlite:database.db'";
+		            $connectionTyp = "sqlite:".$_SERVER["DOCUMENT_ROOT"]."/db/database.db'";
 		            break;
 		        case "mysql":
 		            $connectionTyp = 'mysql:host='.Constants::$databaseHost.';dbname='.Constants::$databaseName.' ';
