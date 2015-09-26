@@ -1,7 +1,9 @@
 <?php
 
 class Constants {
-    public static $databaseDrviver = "mysql"; //replace with sqllite for using a slqlite database
+    public static $databaseDriver = "MySql"; 
+ //   public static $databaseDriver = "SqlLite"; // Use this for sqllite databases
+ //   public static $databaseDriver = "PgSql";  // Use this for postgre databases
 	public static $databaseName = "databankname";
 	public static $databaseHost = "localhost";
 	public static $databaseUser = "root";

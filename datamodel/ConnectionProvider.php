@@ -8,13 +8,16 @@ class ConnectionProvider {
 	private function __construct() {
 		try {
 		    
-		    switch(Constants::$databaseDrviver) {
-		        case "sqlite":
+		    switch(Constants::$databaseDriver) {
+		        case "SqlLite":
 		            $connectionTyp = "sqlite:".$_SERVER["DOCUMENT_ROOT"]."/db/database.db'";
 		            break;
-		        case "mysql":
-		            $connectionTyp = 'mysql:host='.Constants::$databaseHost.';dbname='.Constants::$databaseName.' ';
+		        case "MySql":
+		            $connectionTyp = "mysql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName;
 			        break;
+			    case "PgSql":
+			        $connectionTyp = "pgsql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName;
+			       break;
 		        default:
 		            echo "Unsuportted DB Driver! Check the configuration in Constants.php";
 		            exit(1);
