@@ -1,27 +1,29 @@
 <?php
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntityManager.php");
 
 class Updater {
 
     private $PDO;
+    private $GenericEntityManager;
 
     
     public function Updater() {
         $this->PDO = ConnectionProvider::getConnection();
+        $this->GenericEntityManager = New GenericEntityManager;
     }
     
     public function getAllExistingFilesInDir($pfad="entity"){
         $results_array = array();
         
         if ($handle = opendir($_SERVER["DOCUMENT_ROOT"] . '/datamodel/'.$pfad.'/' ) ) {
-            while (false !== ($entry = readdir($handle))) {
+            while (false !== ($entity = readdir($handle))) {
             	if ($pfad=="dataaccess"){
             		$pfad = "DAO";
             	}
-                if ($entry != "." and $entry != ".." and $entry != "Generic".ucfirst($pfad).".php" ) {
-                    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $entry);//remove .php form filename
+                if ($entity != "." and $entity != ".." and $entity != "Generic".ucfirst($pfad).".php" ) {
+                    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $entity);//remove .php form filename
                     $makeStringLow = strtolower($withoutExt);
                     
                     if ($pfad == "DAO"){
@@ -38,44 +40,20 @@ class Updater {
     return $results_array;
     }
     
-    
-    public function getAllTablenames(){
-        $results_array = array();
+     
         
-        $sql = "select table_name from information_schema.tables where table_schema='".Constants::$databaseName."';";
-        $result = $this->executeGenericStatement($sql);
-        if (empty($result)) {
-            return NULL;
-        }
-        
-        return $results_array;
-     }
-        
-    public function getAllColumnNamesFormTable($table){
-        $results_array = array();
-        
-        $sql = "select Column_name from Information_schema.columns where Table_name like '".$table."';";
-        $result = $this->executeGenericStatement($sql);
-         if (empty($result)) {
-            return NULL;
-        }
-        
-        return $results_array;
-    }
-    
-    
-    public function updateEntry($entry){
-        if(!$this->ExistEntry($entry)){
+    public function updateEntry($entity){
+        if(!$this->ExistEntry($entity)){
             echo "Entry not found";
             die();
         }
-        if(count($this->givebackDeltaOfMissingCollonInEntity($this->getAllColumnNamesFormTable($entry),$this->getAllSetterFromEntry($entry))) < 1){
+        if(count($this->givebackDeltaOfMissingCollonInEntity($this->GenericEntityManager->getEntityColumnsAsArray($entity),$this->getAllSetterFromEntry($entity))) < 1){
             echo "no setter/getter are missing in this Entry";
             die();
         }
         
-        $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
-        $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entry).".php";
+        $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
+        $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
         copy($file, $backupfile);
         unset($file);//delete file
         $this->buildEntry();
@@ -85,18 +63,18 @@ class Updater {
     
     public function buildEntry(){
         $file="";
-        foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir(), $this->getAllTablenames()) as $entry){
+        foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir(), $this->GenericEntityManager->getAllTablenames()) as $entity){
             $output = '<?php
                         include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
-                        class '.$entry.' extends GenericEntity {';
+                        class '.$entity.' extends GenericEntity {';
                     
-            foreach ($this->getAllColumnNamesFormTable($entry) as $index => $setter){
+            foreach ($this->getAllColumnNamesFormTable($entity) as $index => $setter){
                 //get all columnames as private var.
                 $output .= "     private $'.strtolower($setter).'";
                                 
                 if ($index == 0){
-                    $output .= "public function ".$entry."(){";
-                    $output .= '    parent::__construct("'.strtolower($entry).'","'.strtolower($setter).'"); ';
+                    $output .= "public function ".$entity."(){";
+                    $output .= '    parent::__construct("'.strtolower($entity).'","'.strtolower($setter).'"); ';
                     $output .= ' } ';
                 }
                 
@@ -115,7 +93,7 @@ class Updater {
             $output .= "}";
             $output .= "?>";
             
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
+            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
             //save the to file
             if (!empty($file)){
                 file_put_contents($file, $output);
@@ -126,19 +104,19 @@ class Updater {
     
     public function buildDAO(){
         $file="";
-        foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir($pfad="dataaccess"), $this->getAllTablenames()) as $entry){
+        foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir($pfad="dataaccess"), $this->GenericEntityManager->getAllTablenames()) as $entity){
             $output = '<?php
                         include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/GenericDAO.php");
-                        class '.$entry.'DAO extends GenericDAO {';
+                        class '.$entity.'DAO extends GenericDAO {';
             
-            $output .= "public function ".$entry."DAO(){";
-            $output .= '    parent::__construct(new'.ucfirst($entry).'()); ';
+            $output .= "public function ".$entity."DAO(){";
+            $output .= '    parent::__construct(new'.ucfirst($entity).'()); ';
             $output .= ' } ';
     
             $output .= "}";
             $output .= "?>";
             
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entry).".php";
+            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entity).".php";
             //save the to file
             if (!empty($file)){
                 file_put_contents($file, $output);
@@ -148,8 +126,8 @@ class Updater {
         
     }
     
-    public function ExistEntry($entry){
-        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
+    public function ExistEntry($entity){
+        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
         if (file_exists($filename)) {
             return true;
         } else {
@@ -157,12 +135,12 @@ class Updater {
         }
     }
     
-    public function getAllSetterFromEntry($entry){
-        if(!$this->ExistEntry($entry)){
+    public function getAllSetterFromEntry($entity){
+        if(!$this->ExistEntry($entity)){
             echo "Entry not found";
             die();
         }
-        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entry).".php";
+        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
         
         $functionFinder = '/public function[\s\n]+(\S+)[\s\n]*\(/';
         $match = array();

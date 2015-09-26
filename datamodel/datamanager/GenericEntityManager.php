@@ -1,5 +1,4 @@
 <?php
-
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
@@ -108,6 +107,25 @@ class GenericEntityManager{
 			}
 		}
 		return $valuesAsString;
+	}
+	
+	public function getEntityColumnsAsArray($entity) {
+		$reflection = new ReflectionClass($entity);
+		$propertyArray = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
+
+		return $propertyArray;
+	}
+	
+	public function getAllTablenames(){
+		$results_array = array();
+	
+		$sql = "select table_name from information_schema.tables where table_schema='".Constants::$databaseName."';";
+		$result = $this->executeGenericStatement($sql);
+		if (empty($result)) {
+			return NULL;
+		}
+	
+		return $results_array;
 	}
 	
 	public function getEntityValuesAsCommaSeperatedUpdateString($entity) {
