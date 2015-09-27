@@ -47,15 +47,20 @@ class Updater {
             echo "Entry not found";
             die();
         }
+        
         if(count($this->givebackDeltaOfMissingCollonInEntity($this->GenericEntityManager->getEntityColumnsAsArray($entity),$this->getAllSetterFromEntry($entity))) < 1){
             echo "no setter/getter are missing in this Entry";
             die();
         }
         
+        //backup the existing file if exist
         $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
-        $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
-        copy($file, $backupfile);
-        unset($file);//delete file
+        if(file_exists($file)){
+            $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
+            rename($file, $backupfile);
+            unset($file);
+        }
+        
         $this->buildEntry();
 
     }
@@ -69,7 +74,6 @@ class Updater {
             $output .= "/t/t"."class ".$entity." extends GenericEntity {"."/n";
                     
             foreach ($this->getAllColumnNamesFormTable($entity) as $index => $setter){
-                //get all columnames as private var.
                 $output .= "/t/t"."private $".strtolower($setter) /n;
                                 
                 if ($index == 0){
@@ -93,11 +97,15 @@ class Updater {
             $output .= "}"."/n";
             $output .= "?>"."/n";
             
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php"."/n";
             //save the to file
-            if (!empty($file)){
-                file_put_contents($file, $output);
+            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
+            if (file_exists($file)){
+                $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
+                rename($file, $backupfile);
+                unset($file);
             }
+            file_put_contents($file, $output);
+
         }
    
     }
@@ -116,11 +124,14 @@ class Updater {
             $output .= "}"."/n"."/n";
             $output .= "?>"."/n";
             
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entity).".php";
             //save the to file
-            if (!empty($file)){
-                file_put_contents($file, $output);
+            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entity).".php";
+            if (file_exists($file)){
+                $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
+                rename($file, $backupfile);
+                unset($file);
             }
+            file_put_contents($file, $output);
     
         }
         
@@ -168,6 +179,7 @@ class Updater {
     
         return $result;
     }
+    
     public function givebackDeltaOfMissingCollonInEntity($array1, $array2){
         $result = array_diff($array1, $array2);
     
