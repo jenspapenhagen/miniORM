@@ -64,36 +64,36 @@ class Updater {
     public function buildEntry(){
         $file="";
         foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir(), $this->GenericEntityManager->getAllTablenames()) as $entity){
-            $output = '<?php
-                        include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
-                        class '.$entity.' extends GenericEntity {';
+            $output = "<?php"."/n";
+            $output .= "/t/t".'include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");' ."/n";
+            $output .= "/t/t"."class ".$entity." extends GenericEntity {"."/n";
                     
             foreach ($this->getAllColumnNamesFormTable($entity) as $index => $setter){
                 //get all columnames as private var.
-                $output .= "     private $'.strtolower($setter).'";
+                $output .= "/t/t"."private $".strtolower($setter) /n;
                                 
                 if ($index == 0){
-                    $output .= "public function ".$entity."(){";
-                    $output .= '    parent::__construct("'.strtolower($entity).'","'.strtolower($setter).'"); ';
-                    $output .= ' } ';
+                    $output .= "public function ".$entity."(){"."/n";
+                    $output .= '/t/t'.'    parent::__construct(" '.strtolower($entity).' "," '.strtolower($setter).' "); '.'/n';
+                    $output .= " } "."/n";
                 }
                 
                //build getter
-               $output .= "public function get".ucfirst($setter)."(){"."\n";
-               $output .= "return $this->".strtolower($setter)."; ";
-               $output .= "}";
+               $output .= "public function get" .ucfirst($setter). "(){"."\n";
+               $output .= 'return $this->' .strtolower($setter). ';';
+               $output .= "}"."\n"."\n";
                 
                //build setter
-               $output .= "public function set".ucfirst($setter)."(".strtolower($setter)."){ ";
-               $output .= "    $this->".strtolower($setter)."= $".strtolower($setter)."; ";
-               $output .= "}";
+               $output .= "public function set".ucfirst($setter)."(".strtolower($setter)."){ "."/n";
+               $output .= "/t/t".'$this->'.strtolower($setter)."= $".strtolower($setter)."; "."/n";
+               $output .= "}"."/n"."/n";
     
             }
                        
-            $output .= "}";
-            $output .= "?>";
+            $output .= "}"."/n";
+            $output .= "?>"."/n";
             
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
+            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php"."/n";
             //save the to file
             if (!empty($file)){
                 file_put_contents($file, $output);
@@ -105,13 +105,13 @@ class Updater {
     public function buildDAO(){
         $file="";
         foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir($pfad="dataaccess"), $this->GenericEntityManager->getAllTablenames()) as $entity){
-            $output = '<?php
-                        include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/GenericDAO.php");
-                        class '.$entity.'DAO extends GenericDAO {';
+            $output = "<?php"."/n";
+            $output .= "/t/t".'include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/GenericDAO.php");'."/n";
+            $output .= "/t/t"."class ".$entity."DAO extends GenericDAO {"."/n";
             
-            $output .= "public function ".$entity."DAO(){";
-            $output .= '    parent::__construct(new'.ucfirst($entity).'()); ';
-            $output .= ' } ';
+            $output .= "public function ".$entity."DAO(){"."/n";
+            $output .= "/t/t"."parent::__construct(new".ucfirst($entity)."()); "."/n";
+            $output .= "}"."/n";;
     
             $output .= "}";
             $output .= "?>";
