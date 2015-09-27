@@ -111,10 +111,10 @@ class Updater {
             
             $output .= "public function ".$entity."DAO(){"."/n";
             $output .= "/t/t"."parent::__construct(new".ucfirst($entity)."()); "."/n";
-            $output .= "}"."/n";;
+            $output .= "}"."/n";
     
-            $output .= "}";
-            $output .= "?>";
+            $output .= "}"."/n"."/n";
+            $output .= "?>"."/n";
             
             $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entity).".php";
             //save the to file
@@ -136,28 +136,21 @@ class Updater {
     }
     
     public function getAllSetterFromEntry($entity){
-        if(!$this->ExistEntry($entity)){
-            echo "Entry not found";
-            die();
-        }
-        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
+        include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".$entity.".php");
         
-        $functionFinder = '/public function[\s\n]+(\S+)[\s\n]*\(/';
-        $match = array();
-        $output = array();
-        preg_match_all( $functionFinder , file_get_contents($filename) , $match );
-        //filter the function names out of it
-        foreach($match[1] as $key=> $m){
-            $removeFunction = str_replace('public function ', '', $m);
-            $removesetter = str_replace('set', '', $removeFunction);
-            $removegetter = str_replace('get', '', $removesetter);
-            if(($key % 2) == 0 and $key > 1){
-                array_push($output, strtolower($removegetter) );
-            }
-        }
-        
-               
-        return $output;
+        $reflection = new ReflectionClass($entity);
+		$propertyArray = $reflection->getMethods(ReflectionProperty::IS_PUBLIC);
+		array_walk($propertyArray, 
+		    function (&$v) { 
+		    $v = $v->getName(); 
+		      if(preg_match("/set/i", $v->getName(), $matches)){
+		          $v = $matches;
+		      }
+		    } 
+		
+		);
+       
+        return $propertyArray;
     }
     
         
