@@ -136,6 +136,10 @@ class Updater {
     }
     
     public function getAllSetterFromEntry($entity){
+        if(!$this->ExistEntry($entity)){
+            echo "Entry not found";
+            die();
+        }
         include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".$entity.".php");
         
         $reflection = new ReflectionClass($entity);
