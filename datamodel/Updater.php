@@ -144,17 +144,22 @@ class Updater {
         
         $reflection = new ReflectionClass($entity);
 		$propertyArray = $reflection->getMethods(ReflectionProperty::IS_PUBLIC);
-		array_walk($propertyArray, 
-		    function (&$v) { 
-		    $v = $v->getName(); 
-		      if(preg_match("/set/i", $v->getName(), $matches)){
-		          $v = $matches;
-		      }
-		    } 
+		$output = array();
 		
-		);
-       
-        return $propertyArray;
+		foreach( $propertyArray as $methode){
+		    $methode = $methode->getName();
+		    $match = array();
+		    preg_match_all("/set/i", $methode, $match);
+		    foreach($match[1] as $key => $setter){
+		        $removesetter = str_replace('set', '', $setter);
+		        if(($key % 2) == 0 and $key > 1){
+		            array_push($output, strtolower($removesetter) );
+		        }
+		    }
+		}
+		
+        return $output;
+
     }
     
         
