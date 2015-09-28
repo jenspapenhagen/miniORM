@@ -15,7 +15,7 @@ class HelperFunctions {
         return $valuesAsString;
     }
 
-    function makeLinkClickable($input) {
+    public function makeLinkClickable($input) {
         $output = preg_replace('*(f|ht)tps?://[A-Za-z0-9\./?=\+&%]+*', '<a href="$1" target="_blank">$1</a>', $input);
         //force HTTPS
         $output = str_replace( 'http://', 'https://', $output);
@@ -23,7 +23,7 @@ class HelperFunctions {
         return $output;
     }
     
-    function HumanReadableFileSize($size,$unit="") {
+   public function HumanReadableFileSize($size,$unit="") {
         if ( (!$unit and $size >= 1<<30) or $unit == "GB"){
             $gb = number_format($size/(1<<30),2)."GB";
             return $gb;
@@ -41,7 +41,7 @@ class HelperFunctions {
         return number_format($size)." Bytes";
     }
     
-    function ConvertBBcodesToHTML($text) {
+    public function ConvertBBcodesToHTML($text) {
         // BBcode array
         $find = array(
             '~\[b\](.*?)\[/b\]~s',
@@ -95,7 +95,7 @@ class HelperFunctions {
         return preg_replace($find,$replace,$text);
     }
     
-    function CountUpperWordsInString($str){
+    public function CountUpperWordsInString($str){
         $words = explode(" ", $str);
         $i = 0;
     
@@ -107,7 +107,32 @@ class HelperFunctions {
         return $i;
     }
     
-    function CleanXMLString($value){
+    public function convertType($type, $value){
+        switch ($type) {
+            case 'bool':
+            case 'boolean':
+                return boolval($value);
+    
+            case 'int':
+            case 'integer':
+            case 'number':
+                return intval($value);
+    
+            case 'float':
+            case 'double':
+            case 'real':
+            case 'decimal':
+                return doubleval($value);
+    
+            case 'string':
+                return strval($value);
+            }
+    
+
+    }
+    
+    
+    public function CleanXMLString($value){
         if (empty($value)) {
             return $ret = "";
         }

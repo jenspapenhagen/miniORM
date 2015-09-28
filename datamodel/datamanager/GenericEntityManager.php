@@ -49,6 +49,18 @@ class GenericEntityManager{
 		}
 	}
 	
+	public function lastId(GenericEntity $entity) {
+	    try {
+    	    $findlastStatement = "select * from ".$entity->getTablename()." where ".$entity->getIdcolumn()." = '".$entity->{("get".ucfirst($entity->getIdcolumn()))}()."'";
+    	    $statement = $this->PDO->prepare($findlastStatement);
+    	    $statement->execute();
+    		return $statement;
+	    }catch (PDOException $e) {
+			echo "Id not found: ".$e->getMessage();
+			die();
+		}
+	}
+		
 	public function delete(GenericEntity $entity) {
 		try {
 			$deleteStatement = "delete from ".$entity->getTablename()." where ".$entity->getIdcolumn()." = '".$entity->{("get".ucfirst($entity->getIdcolumn()))}()."'";

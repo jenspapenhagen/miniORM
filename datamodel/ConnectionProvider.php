@@ -4,8 +4,10 @@ include_once (dirname(__FILE__)."/../datamodel/Constants.php");
 class ConnectionProvider {
 	protected static $connection;
 	protected $SQLoverSSL = false;
-	
+
 	private function __construct() {
+	    $tns = "(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = Constants::$databaseHost)(PORT = 1521)) ) (CONNECT_DATA = (SERVICE_NAME = Constants::$databaseName)))";
+	    
 		try {
 		    
 		    switch(Constants::$databaseDriver) {
@@ -18,7 +20,10 @@ class ConnectionProvider {
 			    case "PgSql":
 			        $connectionTyp = "pgsql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName;
 			       break;
-		        default:
+			    case "Oracle":
+			        $connectionTyp = "oci:dbname="."(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ".Constants::$databaseHost.")(PORT = 1521)) ) (CONNECT_DATA = (SERVICE_NAME = ".Constants::$databaseName.")))";;
+			       break;
+			    default:
 		            echo "Unsuportted DB Driver! Check the configuration in Constants.php";
 		            exit(1);
 		    }
