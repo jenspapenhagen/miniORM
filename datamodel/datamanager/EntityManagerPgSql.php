@@ -1,5 +1,5 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/datamanager/GenericEntityManager.php");
+include_once (dirname(__FILE__)."/../datamodel/datamanager/GenericEntityManager.php");
 
 class EntityManagerPgSql extends GenericEntityManager {
 

@@ -1,6 +1,6 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/datamanager/EntityManager".Constants::$databaseDriver.".php");
+include_once (dirname(__FILE__)."/../datamodel/Constants.php");
+include_once (dirname(__FILE__)."/../datamodel/datamanager/EntityManager".Constants::$databaseDriver.".php");
 class GenericDAO {
 	protected $entityManager;
 	

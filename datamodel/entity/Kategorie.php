@@ -1,6 +1,6 @@
 <?php
 
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
+include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntity.php");
 
 class Kategorie extends GenericEntity {
 	private $kategorieid;

@@ -1,7 +1,7 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntityManager.php");
+include_once (dirname(__FILE__)."/../datamodel/ConnectionProvider.php");
+include_once (dirname(__FILE__)."/../datamodel/Constants.php");
+include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntityManager.php");
 
 class Updater {
 
@@ -54,9 +54,9 @@ class Updater {
         }
         
         //backup the existing file if exist
-        $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
+        $file = dirname(__FILE__)."/../datamodel/entity/".ucfirst($entity).".php";
         if(file_exists($file)){
-            $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
+            $backupfile = dirname(__FILE__)."/../datamodel/entity/old-".ucfirst($entity).".php";
             rename($file, $backupfile);
             unset($file);
         }
@@ -70,7 +70,7 @@ class Updater {
         $file="";
         foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir(), $this->GenericEntityManager->getAllTablenames()) as $entity){
             $output = "<?php"."/n";
-            $output .= "/t/t".'include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");' ."/n";
+            $output .= "/t/t".'include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntity.php");' ."/n";
             $output .= "/t/t"."class ".$entity." extends GenericEntity {"."/n";
                     
             foreach ($this->getAllColumnNamesFormTable($entity) as $index => $setter){
@@ -98,9 +98,9 @@ class Updater {
             $output .= "?>"."/n";
             
             //save the to file
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
+            $file = dirname(__FILE__)."/../datamodel/entity/".ucfirst($entity).".php";
             if (file_exists($file)){
-                $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
+                $backupfile = dirname(__FILE__)."/../datamodel/entity/old-".ucfirst($entity).".php";
                 rename($file, $backupfile);
                 unset($file);
             }
@@ -114,7 +114,7 @@ class Updater {
         $file="";
         foreach ($this->givebackDeltaOfMissingEntity($this->getAllExistingFilesInDir($pfad="dataaccess"), $this->GenericEntityManager->getAllTablenames()) as $entity){
             $output = "<?php"."/n";
-            $output .= "/t/t".'include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/GenericDAO.php");'."/n";
+            $output .= "/t/t".'include_once (dirname(__FILE__)."/../datamodel/dataaccess/GenericDAO.php");'."/n";
             $output .= "/t/t"."class ".$entity."DAO extends GenericDAO {"."/n";
             
             $output .= "public function ".$entity."DAO(){"."/n";
@@ -125,9 +125,9 @@ class Updater {
             $output .= "?>"."/n";
             
             //save the to file
-            $file = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/".ucfirst($entity).".php";
+            $file = dirname(__FILE__)."/../datamodel/dataaccess/".ucfirst($entity).".php";
             if (file_exists($file)){
-                $backupfile = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/old-".ucfirst($entity).".php";
+                $backupfile = dirname(__FILE__)."/../datamodel/entity/old-".ucfirst($entity).".php";
                 rename($file, $backupfile);
                 unset($file);
             }
@@ -138,7 +138,7 @@ class Updater {
     }
     
     public function ExistEntry($entity){
-        $filename = $_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".ucfirst($entity).".php";
+        $filename = dirname(__FILE__)."/../datamodel/entity/".ucfirst($entity).".php";
         if (file_exists($filename)) {
             return true;
         } else {
@@ -151,7 +151,7 @@ class Updater {
             echo "Entry not found";
             die();
         }
-        include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/".$entity.".php");
+        include_once (dirname(__FILE__)."/../datamodel/entity/".$entity.".php");
         
         $reflection = new ReflectionClass($entity);
 		$propertyArray = $reflection->getMethods(ReflectionProperty::IS_PUBLIC);

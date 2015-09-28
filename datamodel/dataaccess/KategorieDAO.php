@@ -1,6 +1,6 @@
 <?php
 
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/GenericDAO.php");
+include_once (dirname(__FILE__)."/../datamodel/dataaccess/GenericDAO.php");
 
 class KategorieDAO extends GenericDAO {
 	

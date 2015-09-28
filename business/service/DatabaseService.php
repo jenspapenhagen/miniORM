@@ -1,9 +1,9 @@
 <?php
 
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/KategorieDAO.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/dataaccess/GenericDAO.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/Kategorie.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
+include_once (dirname(__FILE__)."/../datamodel/dataaccess/KategorieDAO.php");
+include_once (dirname(__FILE__)."/../datamodel/dataaccess/GenericDAO.php");
+include_once (dirname(__FILE__)."/../datamodel/entity/Kategorie.php");
+include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntity.php");
 
 class DatabaseService{
 	

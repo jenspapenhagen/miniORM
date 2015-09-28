@@ -1,7 +1,7 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/ConnectionProvider.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/entity/GenericEntity.php");
+include_once (dirname(__FILE__)."/../datamodel/ConnectionProvider.php");
+include_once (dirname(__FILE__)."/../datamodel/Constants.php");
+include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntity.php");
 
 
 class GenericEntityManager{

@@ -1,5 +1,5 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/datamodel/Constants.php");
+include_once (dirname(__FILE__)."/../datamodel/Constants.php");
 
 class ConnectionProvider {
 	protected static $connection;

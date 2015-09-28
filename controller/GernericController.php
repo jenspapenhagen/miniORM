@@ -1,5 +1,5 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/business/service/DatabaseService.php");
+include_once (dirname(__FILE__)."/../business/service/DatabaseService.php");
 class HeaderController {
 	
 	static function processSessionCheckthenLoginOrLogout() {
