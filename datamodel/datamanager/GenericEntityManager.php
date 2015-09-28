@@ -116,18 +116,6 @@ class GenericEntityManager{
 		return $propertyArray;
 	}
 	
-	public function getAllTablenames(){
-		$results_array = array();
-	
-		$sql = "select table_name from information_schema.tables where table_schema='".Constants::$databaseName."';";
-		$result = $this->executeGenericStatement($sql);
-		if (empty($result)) {
-			return NULL;
-		}
-	
-		return $results_array;
-	}
-	
 	public function getEntityValuesAsCommaSeperatedUpdateString($entity) {
 		$reflection = new ReflectionClass($entity);
 		$propertyArray = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
@@ -142,6 +130,18 @@ class GenericEntityManager{
 		}
 		return $valuesAsString;
 	}
+	
+	public function getAllTablenames(){
+	    $results_array = array();
+	
+	    $sql = "select table_name from information_schema.tables where table_schema='".Constants::$databaseName."';";
+	    $result = $this->executeGenericStatement($sql);
+	    if (empty($result)) {
+	        return NULL;
+	    }
+	
+	    return $results_array;
+	}	
 	
 	public function executeGenericSelect($statement) {
 		$preparedStatement = $this->PDO->prepare($statement);

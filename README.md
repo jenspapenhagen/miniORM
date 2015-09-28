@@ -2,7 +2,7 @@
 a non bloat ORM (Object Relational Mapper) for small/fast PHP Projects
 PHP 5.6 is required.
 miniORM supports MySQL, SQLite and PostgreSQL
-
+miniORM base of the convention-over-configuration Philosophy
 
 ###Overview over the layermodle of the Framework:
 
