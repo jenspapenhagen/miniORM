@@ -138,12 +138,24 @@ class Updater {
     }
     
     public function ExistEntry($entity){
+        $statement = "SELECT 1 FROM " . $entity . " LIMIT 1";
+        $statement = $this->PDO->prepare($statement);
+        $statement->execute();
+        if(!$statement){
+            echo "tabel in Db dont exist <br>";
+        }
+
         $filename = dirname(__FILE__)."/../datamodel/entity/".ucfirst($entity).".php";
-        if (file_exists($filename)) {
+        if(!file_exists($filename)){
+            echo "entity as file not exist <br>";
+        }
+        
+        if (file_exists($filename) and $statement) {
             return true;
         } else {
             return false;
         }
+        
     }
     
     public function getAllSetterFromEntry($entity){

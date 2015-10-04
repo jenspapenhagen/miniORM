@@ -1,12 +1,14 @@
 <?php
 include_once (dirname(__FILE__)."/../datamodel/ConnectionProvider.php");
 include_once (dirname(__FILE__)."/../datamodel/Constants.php");
+include_once (dirname(__FILE__)."/../datamodel/Updater.php");
 include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntity.php");
 
 
 class GenericEntityManager{
 	protected $entityToManage;
 	protected $PDO;
+	protected $Updater;
 	protected $findAll = "select * from ";
 	protected $findById = "select * from ";
 	protected $lastId = "select max(id) form ";
@@ -15,12 +17,23 @@ class GenericEntityManager{
 	protected $tableColumns;
 	
 	public function GenericEntityManager(GenericEntity $entity) {
+	    $this->Updater = New Updater();
+	    if($this->Updater->ExistEntry($entity)){
+	        $this->entityToManage = $entity;
+	    }else{
+	        echo "entity not found.";
+	        die();
+	    }
 		$this->PDO = ConnectionProvider::getConnection();
-		$this->entityToManage = $entity;
+		
 		$this->findAll .= Constants::$databaseName.".".$entity->getTablename();
 		$this->findById .= Constants::$databaseName.".".$entity->getTablename()." where ".$this->entityToManage->getIdcolumn()." = '";
 		$this->lastId .= Constants::$databaseName.".".$entity->getTablename();
 		$this->countAll .= Constants::$databaseName.".".$entity->getTablename();
+	}
+	
+	public function entityexist($entity){
+	    $this->Updater->ExistEntry($entity);
 	}
 	
 	public function findAll() {
