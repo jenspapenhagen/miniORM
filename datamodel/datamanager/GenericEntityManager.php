@@ -9,6 +9,7 @@ class GenericEntityManager{
 	protected $PDO;
 	protected $findAll = "select * from ";
 	protected $findById = "select * from ";
+	protected $lastId = "select max(id) form ";
 	protected $countAll = "select count(*) from ";
 	protected $tableColumnsQuery;
 	protected $tableColumns;
@@ -18,6 +19,7 @@ class GenericEntityManager{
 		$this->entityToManage = $entity;
 		$this->findAll .= Constants::$databaseName.".".$entity->getTablename();
 		$this->findById .= Constants::$databaseName.".".$entity->getTablename()." where ".$this->entityToManage->getIdcolumn()." = '";
+		$this->lastId .= Constants::$databaseName.".".$entity->getTablename();
 		$this->countAll .= Constants::$databaseName.".".$entity->getTablename();
 	}
 	
@@ -50,14 +52,15 @@ class GenericEntityManager{
 	}
 	
 	public function lastId(GenericEntity $entity) {
-	    try {
-    	    $findlastStatement = "select * from ".$entity->getTablename()." where ".$entity->getIdcolumn()." = '".$entity->{("get".ucfirst($entity->getIdcolumn()))}()."'";
-    	    $statement = $this->PDO->prepare($findlastStatement);
-    	    $statement->execute();
-    		return $statement;
-	    }catch (PDOException $e) {
-			echo "Id not found: ".$e->getMessage();
-			die();
+        $this->lastId .= $this->entityToManage->getTablename()."';";
+   	    $statement = $this->PDO->prepare($this->lastId);
+   	    $statement->execute();
+   		$reflect = new ReflectionClass($this->entityToManage);
+	    $result = $statement->fetchAll(PDO::FETCH_CLASS,$reflect->getName());
+		if (!empty($result)) {
+			return $result[0];
+		} else {
+			return NULL;
 		}
 	}
 		
