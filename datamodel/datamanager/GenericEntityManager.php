@@ -3,12 +3,14 @@ include_once (dirname(__FILE__)."/../datamodel/ConnectionProvider.php");
 include_once (dirname(__FILE__)."/../datamodel/Constants.php");
 include_once (dirname(__FILE__)."/../datamodel/Updater.php");
 include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntity.php");
+include_once (dirname(__FILE__)."/../business/service/CSVHandler.php");
 
 
 class GenericEntityManager{
 	protected $entityToManage;
 	protected $PDO;
 	protected $Updater;
+	protected $CSVHandler;
 	protected $findAll = "select * from ";
 	protected $findById = "select * from ";
 	protected $lastId = "select max(id) form ";
@@ -169,7 +171,52 @@ class GenericEntityManager{
 	    }
 	
 	    return $results_array;
-	}	
+	}
+	
+	public function exportTableHeaderToCSV($file){
+	    $tableheader = $this->getAllTablenames();
+	    $filename = $file.".csv";
+	    
+	    if (fileExists($filename)){
+	        echo "ExportFile exist";
+	        die();
+	    }
+	    
+	    $CSVHandler = New CSVHandler($filename);
+	    $CSVHandler->writeRow($tableheader);
+	}
+	
+	public function importTableHeaderFromCSV($file){
+	    $filename = $file.".csv";
+	    
+	    if (!fileExists($filename) and $this->entityexist($file)){
+	        echo "import can only in a new table";
+	        die();
+	    }
+	    
+	    $CSVHandler = New CSVHandler($filename);
+	    $CSVHandler->countColumns();
+	    $data = $CSVHandler->getHeaders();
+
+        $sql = "CREATE TABLE IF NOT EXISTS ` ".$file." ` (";
+	    for($i=0; $i<= $CSVHandler->countColumns();$i++){
+	        if($i==0){
+	            $sql .= "`". $data[$i]."` int(11) NOT NULL auto_increment";
+	        }
+	        
+            $sql .= "`". $data[$i]."` varchar(255) NOT NULL default ''";
+            
+            if($i==0){
+                $sql .= "PRIMARY KEY  (`".$data[$i]."`)";
+            }
+	     }  
+	     $sql .= ")";
+         $result = $this->executeGenericStatement($sql);
+	     if (empty($result)) {
+	       return NULL;
+	     }
+	}
+	
 	
 	public function executeGenericSelect($statement) {
 		$preparedStatement = $this->PDO->prepare($statement);
