@@ -107,6 +107,17 @@ class HelperFunctions {
         return $i;
     }
     
+    public function array_trim($array) {
+        while (!empty($array) and strlen(reset($array)) === 0) {
+            array_shift($array);
+        }
+        while (!empty($array) and strlen(end($array)) === 0) {
+            array_pop($array);
+        }
+        return $array;
+    }
+    
+    
     public function convertType($type, $value){
         switch ($type) {
             case 'bool':

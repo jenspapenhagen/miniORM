@@ -4,6 +4,8 @@ include_once (dirname(__FILE__)."/../datamodel/Constants.php");
 include_once (dirname(__FILE__)."/../datamodel/Updater.php");
 include_once (dirname(__FILE__)."/../datamodel/entity/GenericEntity.php");
 include_once (dirname(__FILE__)."/../business/service/CSVHandler.php");
+include_once (dirname(__FILE__)."/../business/service/HelperFunctions.php");
+include_once (dirname(__FILE__)."/../business/service/Evaluator.php");
 
 
 class GenericEntityManager{
@@ -11,6 +13,8 @@ class GenericEntityManager{
 	protected $PDO;
 	protected $Updater;
 	protected $CSVHandler;
+	protected $HelperFunctions;
+	protected $Evaluator;
 	protected $findAll = "select * from ";
 	protected $findById = "select * from ";
 	protected $lastId = "select max(id) form ";
@@ -197,6 +201,12 @@ class GenericEntityManager{
 	    $CSVHandler = New CSVHandler($filename);
 	    $CSVHandler->countColumns();
 	    $data = $CSVHandler->getHeaders();
+	    
+	    $HelperFunctions = New HelperFunctions;
+	    $data = $HelperFunctions->array_trim($data);
+	    
+	    $Evaluator = New Evaluator;
+	    $date = array_filter($data,$Evaluator->returnOnlyLettersNumbersUnderscore($data));
 
         $sql = "CREATE TABLE IF NOT EXISTS ` ".$file." ` (";
 	    for($i=0; $i<= $CSVHandler->countColumns();$i++){
