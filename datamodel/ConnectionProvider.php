@@ -5,23 +5,37 @@ class ConnectionProvider {
 	protected static $connection;
 	protected $SQLoverSSL = false;
 
+    
 	private function __construct() {
-	    $tns = "(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = Constants::$databaseHost)(PORT = 1521)) ) (CONNECT_DATA = (SERVICE_NAME = Constants::$databaseName)))";
+	    //for Oracle
+	    $tns = "
+	        (DESCRIPTION =
+	           (ADDRESS_LIST = (
+	               ADDRESS =
+	               (PROTOCOL = TCP)
+	               (HOST = ".Constants::$databaseHost.")
+	               (PORT = 1521)
+	               )
+	           )
+	           (CONNECT_DATA = (
+	               SERVICE_NAME = ".Constants::$databaseName.")
+	           )
+	           )";
 	    
 		try {
 		    
 		    switch(Constants::$databaseDriver) {
 		        case "SqlLite":
-		            $connectionTyp = "sqlite:".$_SERVER["DOCUMENT_ROOT"]."/db/database.db'";
+		            $connectionTyp = "sqlite:".$_SERVER["DOCUMENT_ROOT"]."/db/database.db";
 		            break;
 		        case "MySql":
-		            $connectionTyp = "mysql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName;
+		            $connectionTyp = "mysql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName.";charset=utf8";
 			        break;
 			    case "PgSql":
-			        $connectionTyp = "pgsql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName;
+			        $connectionTyp = "pgsql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName.";charset=utf8";
 			       break;
 			    case "Oracle":
-			        $connectionTyp = "oci:dbname="."(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ".Constants::$databaseHost.")(PORT = 1521)) ) (CONNECT_DATA = (SERVICE_NAME = ".Constants::$databaseName.")))";;
+			        $connectionTyp = "oci:dbname=".$this->$tns;
 			       break;
 			    default:
 		            echo "Unsuportted DB Driver! Check the configuration in Constants.php";
