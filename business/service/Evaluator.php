@@ -42,145 +42,76 @@ class Evaluator{
 	}
 	 
 
-	function returnOnlyLowercaseLetters($input) {
-		$output = preg_replace("/[^a-z]+/", "", $input);
-		 
-		return $output;
-	}
-
-	function returnOnlyUppercaseLetters($input) {
-		$output = preg_replace("/[^A-Z]+/", "", $input);
-
-		return $output;
-	}
-
-	function returnOnlyNumbers($input) {
-		$output = preg_replace("/[^0-9]+/", "", $input);
-
-		return $output;
-	}
-
-	function returnOnlyLetter($input) {
-		$output = preg_replace("/[^A-Za-z]+/", "", $input);
-
-		return $output;
-	}
-
-	function returnOnlyLowercaseLettersAndNumbers($input) {
-		$output = preg_replace("/[^a-z0-9]+/", "", $input);
-
-		return $output;
-	}
-
-	function returnOnlyUppercaseLettersAndNumbers($input) {
-		$output = preg_replace("/[^A-Z0-9]+/", "", $input);
-
-		return $output;
-	}
-
-	function returnOnlyHexDec($input) {
-		$output = preg_replace("/[^A-F0-9]+/", "", $input);
-
-		return $output;
-	}
-
-	function returnOnlyBinary($input) {
-		$output = preg_replace("/[^0-1]+/", "", $input);
-
-		return $output;
-	}
-
-	function returnOnlyLettersNumbersUnderscore($input) {
-		$output = preg_replace("/[^A-Za-z0-9_]+/", "_", $input);
-
-		return $output;
-	}
-
-	function returnOnlyLettersNumbers($input) {
-		$output = preg_replace("/[^A-Za-z0-9]+/", "", $input);
-
+	function GetSuchAlgorithmen($input) {
+		switch ($input) {
+			case "LowercaseLettersAndNumbers":
+				$output = "a-z0-9";
+				break;
+			case "UppercaseLettersAndNumbers":
+				$output = "A-Z0-9";
+				break;
+			case "ForHexDec":
+				$output = "A-F0-9";
+				break;
+			case "Binary":
+				$output = "0-1";
+				break;
+			case "LettersNumbersUnderscore":
+				$output = "A-Za-z0-9_";
+				break;
+			case "Numbers":
+				$output = "0-9";
+				break;
+			case "ForLettersNumber":
+				$output = "A-Za-z0-9";
+				break;
+			case "Letter":
+				$output = "A-Za-z";
+				break;
+			default:
+				$output = "0-1";
+		}
 		return $output;
 	}
 
 	//check for input
-	function checkForLowercaseLetters($input) {
-		if ( preg_match("/[^a-z]+/", $input) ) {
+    function checkFor($input, $SuchAlgorithmen="GermanLetter", $minlength=0, $maxlength=60){
+		if($this->emptycheck($input)){
+			echo "no input";
+			die();
+		}
+
+		if($SuchAlgorithmen == "GermanLetter")){
+            $buildTheRegex = '/^((?i)[0-9a-zäöüÄÖÜ]){'.$minlength.','.$maxlength.'}$/i';
+		}else{
+			$Regex = $this->GetSuchAlgorithmen($SuchAlgorithmen);
+            $buildTheRegex = '/^['.$Regex.']{'.$minlength.','.$maxlength.'}$/';
+		}
+
+		if(preg_match($buildTheRegex, $input) ){
 			return true;
 		}
-		
+
 		return false;
 	}
 
-	function checkForUppercaseLetters($input) {
-		if ( preg_match("/[^A-Z]+/", $input) ) {
-			return true;
-		}
-		
-		return false;
-	}
+	//return only strict input
+    function returnOnly($input, $SuchAlgorithmen="GermanLetter", $minlength=0, $maxlength=60){
+        if($this->emptycheck($input)){
+            echo "no input";
+            die();
+        }
 
-	function checkForNumbers($input) {
-		if ( is_numeric($input)) {
-			return true;
-		}
-		
-		return false;
-	}
+        if($SuchAlgorithmen == "GermanLetter")){
+            $buildTheRegex = '/^((?i)[0-9a-zäöüÄÖÜ]){'.$minlength.','.$maxlength.'}$/i';
+        }else{
+            $Regex = $this->GetSuchAlgorithmen($SuchAlgorithmen);
+            $buildTheRegex = '/^['.$Regex.']{'.$minlength.','.$maxlength.'}$/';
+        }
 
-	function checkForLetter($input) {
-		if ( preg_match('/^[a-zA-ZÃ¤Ã¶Ã¼Ã„Ã–Ãœ ]+$/i', $input)) {
-			return true;
-		}
-		
-		return false;
-	}
+		$output = preg_replace($buildTheRegex, "",$input);
 
-	function checkForLowercaseLettersAndNumbers($input) {
-		if ( preg_match("/[^a-z0-9]+/", $input) ) {
-			return true;
-		}
-		
-		return false;
-	}
-
-	function checkForUppercaseLettersAndNumbers($input) {
-		if ( preg_match("/[^A-Z0-9]+/", $input) ) {
-			return true;
-		}
-		
-		return false;
-	}
-
-	function checkForHexDec($input) {
-		if ( preg_match("/[^A-F0-9]+/", $input) ) {
-			return true;
-		}
-		
-		return false;
-	}
-
-	function checkForBinary($input) {
-		if ( preg_match("/[^0-1]+/", $input) ) {
-			return true;
-		}
-		
-		return false;
-	}
-
-	function checkForLettersNumbersUnderscore($input) {
-		if ( preg_match("/[^A-Za-z0-9_]+/", $input) ) {
-			return true;
-		}
-		
-		return false;
-	}
-
-	function checkForLettersNumbers($input) {
-		if ( preg_match("/[^A-Za-z0-9]+/", $input) ) {
-			return true;
-		}
-		
-		return false;
+		return $output;
 	}
 
 	//lengths
@@ -298,7 +229,7 @@ class Evaluator{
 	}
 	//japan only have Yen
 	function moneyJap($input) {
-		$money = $this->returnOnlyNumbers($input);
+		$money = $this->returnOnly("Numbers",$input);
 		if ( $money == false ) {
 			return false;
 		}

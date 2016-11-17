@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 include_once (dirname(__FILE__)."/../datamodel/Constants.php");
 
 class ConnectionProvider {
@@ -23,13 +24,16 @@ class ConnectionProvider {
 	           )";
 	    
 		try {
-		    
+
 		    switch(Constants::$databaseDriver) {
 		        case "SqlLite":
 		            $connectionTyp = "sqlite:".$_SERVER["DOCUMENT_ROOT"]."/db/database.db";
 		            break;
 		        case "MySql":
 		            $connectionTyp = "mysql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName.";charset=utf8";
+			        break;
+                case "MSSql":
+		            $connectionTyp = "sqlsrv:Server=".Constants::$databaseHost.";Database=".Constants::$databaseName.";charset=utf8";
 			        break;
 			    case "PgSql":
 			        $connectionTyp = "pgsql:host=".Constants::$databaseHost.";dbname=".Constants::$databaseName.";charset=utf8";
@@ -53,9 +57,12 @@ class ConnectionProvider {
 			die();
 		}
 	}
-	
-	
-	
+
+
+	/**
+	 * @param bool $SQLoverSSL
+	 * @return array
+     */
 	public function setSSL($SQLoverSSL = false){
 	    $setSSL = '';
 	    if ($SQLoverSSL){
