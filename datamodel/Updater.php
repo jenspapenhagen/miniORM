@@ -8,13 +8,16 @@ class Updater {
     private $PDO;
     private $GenericEntityManager;
 
-    
-    public function Updater() {
+    public function __construct(){
         $this->PDO = ConnectionProvider::getConnection();
         $this->GenericEntityManager = New GenericEntityManager;
     }
+
+    public function Updater() {
+        self::__construct();
+    }
     
-    public function getAllExistingFilesInDir($pfad="entity"){
+    public function getAllExistingFilesInDir(string $pfad="entity"):array{
         $results_array = array();
         
         if ($handle = opendir($_SERVER["DOCUMENT_ROOT"] . '/datamodel/'.$pfad.'/' ) ) {
@@ -158,7 +161,7 @@ class Updater {
         
     }
     
-    public function getAllSetterFromEntry($entity){
+    public function getAllSetterFromEntry($entity):array{
         if(!$this->ExistEntry($entity)){
             echo "Entry not found";
             die();
@@ -186,13 +189,13 @@ class Updater {
     }
     
         
-    public function givebackDeltaOfMissingEntity($array1, $array2){
+    public function givebackDeltaOfMissingEntity(array $array1, array $array2):array{
         $result = array_diff($array1, $array2);
     
         return $result;
     }
     
-    public function givebackDeltaOfMissingCollonInEntity($array1, $array2){
+    public function givebackDeltaOfMissingCollonInEntity(array $array1,array $array2):array{
         $result = array_diff($array1, $array2);
     
         return $result;

@@ -4,14 +4,14 @@ class CSRF_Protect {
     private $acceptGet = false;
 	private $timeout = 300; // Default timeout is 300 seconds (5 minutes)
 	
-	public function __construct($timeout=300){
+	public function __construct(int $timeout=300){
         $this->timeout = $timeout;
             if (session_id() === ''){
                 session_start();
             }
 	}
 	
-	public function getRandomString() {
+	public function getRandomString() :string {
 	    $len = 32;
 	    $rString = '';
 	    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
@@ -24,7 +24,7 @@ class CSRF_Protect {
 	    return $rString;
 	}
 	
-	protected function calculateHash() {
+	protected function calculateHash():string {
 	    $options = ['cost' => 12];
 	    //old sha1(implode('', $_SESSION['csrf']));
 	    $output =  password_hash(implode('', $_SESSION['csrf']), PASSWORD_BCRYPT, $options);
@@ -32,7 +32,7 @@ class CSRF_Protect {
 	    return $output;
 	}
 	
-	public function setToken() {
+	public function setToken():string {
 	    // Create or overwrite the csrf entry in the seesion
 	    $_SESSION['csrf'] = array();
 	    $_SESSION['csrf']['time'] = time();
@@ -45,14 +45,14 @@ class CSRF_Protect {
 	    return base64_encode($hash);
 	}
 	
-	public function generateHiddenField() {
+	public function generateHiddenField():string {
 	    $token = $this->setToken();
 	    $output = "<input type=\"hidden\" name=\"csrf\" value=\"$token\" />";
 	    
 	    return $output;
 	}
 	
-	protected function checkTimeout($timeout=NULL) {
+	protected function checkTimeout(null $timeout=NULL):string {
 	    if (!$timeout) {
 	        $timeout = $this->timeout;
 	    }
@@ -60,7 +60,7 @@ class CSRF_Protect {
 	return ($_SERVER['REQUEST_TIME'] - $_SESSION['csrf']['time']) < $timeout;
     }
 	
-	public function getToken($timeout=NULL) {
+	public function getToken(null $timeout=NULL):string {
 	    if (isset($_SESSION['csrf'])) {
 	        if (!$this->checkTimeout($timeout)) {
 	            return false;

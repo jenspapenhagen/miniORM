@@ -11,20 +11,22 @@ class DatabaseService{
 	private $kategorieDAO;
 	
 	protected static $databaseService;
-	
-	public static function getDatabaseService() {
-		if (!self::$databaseService) {
-			self::$databaseService  = new DatabaseService();
-		}
-		return self::$databaseService;
-	}
+
+    public function __construct(){
+        $this->kategorieDAO = new KategorieDAO();
+
+    }
 		
 	private function DatabaseService(){
-	
-		$this->kategorieDAO = new KategorieDAO();
-		
+        self::__construct();
 	}
 
+    public static function getDatabaseService() {
+        if (!self::$databaseService) {
+            self::$databaseService  = new DatabaseService();
+        }
+        return self::$databaseService;
+    }
 	
 	
 	//Kategorie Funktionen
@@ -33,7 +35,7 @@ class DatabaseService{
 		return $this->kategorieDAO->findAll();
 	}
 	
-	public function findKategorieById($id){
+	public function findKategorieById(int $id){
 		return $this->kategorieDAO->findById($id);
 	}
 	

@@ -21,7 +21,7 @@ class HeaderController {
 		}
 	}
 	
-	static function getSpecificOrAllKetegories() {
+	static function getSpecificOrAllKetegories():string {
 		$kategorien = DatabaseService::getDatabaseService()->findAllKategorie();
 		$output = "";
 		foreach ($kategorien as $key=>$value) {

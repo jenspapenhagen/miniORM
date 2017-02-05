@@ -2,7 +2,7 @@
 
 class HelperFunctions {
     
-    public function ArrayToCommaSeperatedString($array){
+    public function ArrayToCommaSeperatedString(array $array):string{
         $valuesAsString = "";
         
         foreach ($array as $item) {
@@ -15,7 +15,7 @@ class HelperFunctions {
         return $valuesAsString;
     }
 
-    public function makeLinkClickable($input) {
+    public function makeLinkClickable(string $input):string {
         $output = preg_replace('*(f|ht)tps?://[A-Za-z0-9\./?=\+&%]+*', '<a href="$1" target="_blank">$1</a>', $input);
         //force HTTPS
         $output = str_replace( 'http://', 'https://', $output);
@@ -23,7 +23,7 @@ class HelperFunctions {
         return $output;
     }
     
-   public function HumanReadableFileSize($size,$unit="") {
+   public function HumanReadableFileSize(int $size,string $unit=""):string {
         if ( (!$unit and $size >= 1<<30) or $unit == "GB"){
             $gb = number_format($size/(1<<30),2)."GB";
             return $gb;
@@ -41,7 +41,7 @@ class HelperFunctions {
         return number_format($size)." Bytes";
     }
     
-    public function ConvertBBcodesToHTML($text) {
+    public function ConvertBBcodesToHTML(string $text):string {
         // BBcode array
         $find = array(
             '~\[b\](.*?)\[/b\]~s',
@@ -94,8 +94,8 @@ class HelperFunctions {
         // Replacing the BBcodes with corresponding HTML tags
         return preg_replace($find,$replace,$text);
     }
-    
-    public function CountUpperWordsInString($str){
+
+    public function CountUpperWordsInString(string $str):int{
         $words = explode(" ", $str);
         $i = 0;
     
@@ -107,7 +107,7 @@ class HelperFunctions {
         return $i;
     }
     
-    public function array_trim($array) {
+    public function array_trim(array $array):array {
         while (!empty($array) and strlen(reset($array)) === 0) {
             array_shift($array);
         }
@@ -118,7 +118,7 @@ class HelperFunctions {
     }
     
     
-    public function convertType($type, $value){
+    public function convertType(string $type, $value): bool | int | float | string{
         switch ($type) {
             case 'bool':
             case 'boolean':
@@ -143,7 +143,7 @@ class HelperFunctions {
     }
     
     
-    public function CleanXMLString($value){
+    public function CleanXMLString(string $value):string{
         if (empty($value)) {
             return $ret = "";
         }

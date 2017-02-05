@@ -24,21 +24,21 @@ class CSVHandler {
         $this->handle = null;
     }
     
-    public function setDelimiter($delimiter) {
+    public function setDelimiter(string $delimiter) {
         $this->delimiter = $delimiter;
     }
     
-    public function setEnclosure($enclosure)  {
+    public function setEnclosure(string $enclosure)  {
         $this->enclosure = $enclosure;
     }
     
 
-    public function getHeaders()    {
+    public function getHeaders():headers{
         $this->init();
         return $this->headers;
     }
     
-    public function getRow()    {
+    public function getRow(){
         $this->init();
         if ($this->isEof()) {
             return false;
@@ -63,11 +63,11 @@ class CSVHandler {
         }
     }
     
-    public function isEof()    {
+    public function isEof(){
         return $this->handle->eof();
     }
     
-    public function getAll()    {
+    public function getAll():array    {
         $data = array();
         while ($row = $this->getRow()) {
             $data[] = $row;
@@ -75,11 +75,11 @@ class CSVHandler {
         return $data;
     }
     
-    public function getLineNumber()    {
+    public function getLineNumber():int    {
         return $this->handle->key();
     }
     
-    public function getLastLineNumber()    {
+    public function getLastLineNumber():int    {
         if ($this->lastLine !== false) {
             return $this->lastLine;
         }
@@ -89,17 +89,18 @@ class CSVHandler {
         return $this->lastLine = $lastLine;
     }
     
-    public function countColumns(){
+    public function countColumns():int{
         $output = count($this->getCurrentRow());
         
         return $output;
     }
     
-    public function getCurrentRow()    {
-        return str_getcsv($this->handle->current(), $this->delimiter, $this->enclosure);
+    public function getCurrentRow():string {
+        $output = str_getcsv($this->handle->current(), $this->delimiter, $this->enclosure);
+        return $output;
     }
     
-    public function advanceTo($lineNumber)    {
+    public function advanceTo(int $lineNumber)    {
         if ($this->headerLine > $lineNumber) {
             echo "Line Number $lineNumber is before the header line that was set";
             die();
@@ -129,8 +130,7 @@ class CSVHandler {
         $this->headers = $this->getRow();
     }
     
-    protected function init()
-    {
+    protected function init():int {
         if (true === $this->init) {
             return;
         }
@@ -142,7 +142,7 @@ class CSVHandler {
         }
     }
     
-    protected function rowIsEmpty($row)    {
+    protected function rowIsEmpty(array $row):bool    {
         $emptyRow = ($row === array(null));
         $emptyRowWithDelimiters = (array_filter($row) === array());
         $isEmpty = false;
@@ -157,7 +157,7 @@ class CSVHandler {
     }
     
 
-    public function writeRow($row)  {
+    public function writeRow(array $row):array  {
         if (is_string($row)) {
             $row = explode(',', $row);
             $row = array_map('trim', $row);

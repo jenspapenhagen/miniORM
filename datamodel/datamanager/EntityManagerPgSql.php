@@ -3,8 +3,12 @@ include_once (dirname(__FILE__)."/../datamodel/datamanager/GenericEntityManager.
 
 class EntityManagerPgSql extends GenericEntityManager {
 
+    public function __construct(GenericEntity $entity){
+        parent::__construct($entity);
+    }
+
 	public function EntityManagerPgSql(GenericEntity $entity) {
-		parent::__construct($entity);
+		self::__construct($entity);
 	}
 
 }

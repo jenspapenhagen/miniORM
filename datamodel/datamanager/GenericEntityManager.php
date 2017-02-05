@@ -21,21 +21,25 @@ class GenericEntityManager{
 	protected $countAll = "select count(*) from ";
 	protected $tableColumnsQuery;
 	protected $tableColumns;
-	
+
+    public function __construct(GenericEntity $entity){
+        $this->Updater = New Updater();
+        if($this->Updater->ExistEntry($entity)){
+            $this->entityToManage = $entity;
+        }else{
+            echo "entity not found.";
+            die();
+        }
+        $this->PDO = ConnectionProvider::getConnection();
+
+        $this->findAll .= Constants::$databaseName.".".$entity->getTablename();
+        $this->findById .= Constants::$databaseName.".".$entity->getTablename()." where ".$this->entityToManage->getIdcolumn()." = '";
+        $this->lastId .= Constants::$databaseName.".".$entity->getTablename();
+        $this->countAll .= Constants::$databaseName.".".$entity->getTablename();
+    }
+
 	public function GenericEntityManager(GenericEntity $entity) {
-	    $this->Updater = New Updater();
-	    if($this->Updater->ExistEntry($entity)){
-	        $this->entityToManage = $entity;
-	    }else{
-	        echo "entity not found.";
-	        die();
-	    }
-		$this->PDO = ConnectionProvider::getConnection();
-		
-		$this->findAll .= Constants::$databaseName.".".$entity->getTablename();
-		$this->findById .= Constants::$databaseName.".".$entity->getTablename()." where ".$this->entityToManage->getIdcolumn()." = '";
-		$this->lastId .= Constants::$databaseName.".".$entity->getTablename();
-		$this->countAll .= Constants::$databaseName.".".$entity->getTablename();
+        self::__construct($entity);
 	}
 	
 	public function entityexist($entity){
@@ -55,7 +59,7 @@ class GenericEntityManager{
 		}
 	}
 	
-	public function findById($id) {
+	public function findById(int $id):int {
 		$this->findById .= $id."';";
 		$statement = $this->PDO->prepare($this->findById);
 		$statement->execute();
@@ -70,7 +74,7 @@ class GenericEntityManager{
 		}
 	}
 	
-	public function lastId(GenericEntity $entity) {
+	public function lastId(GenericEntity $entity):int {
         $this->lastId .= $this->entityToManage->getTablename()."';";
    	    $statement = $this->PDO->prepare($this->lastId);
    	    $statement->execute();
@@ -113,7 +117,7 @@ class GenericEntityManager{
 	
 	}
 	
-	public function getEntityValuesAsCommaSeperatedString($entity) {
+	public function getEntityValuesAsCommaSeperatedString($entity):string {
 		$reflection = new ReflectionClass($entity);
 		$propertyArray = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
 		$valuesAsString = "";
@@ -128,7 +132,7 @@ class GenericEntityManager{
 		return $valuesAsString;
 	}
 	
-	public function getEntityColumnsAsCommaSeperatedString($entity) {
+	public function getEntityColumnsAsCommaSeperatedString($entity):string {
 		$reflection = new ReflectionClass($entity);
 		$propertyArray = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
 		$valuesAsString = "";
@@ -143,14 +147,14 @@ class GenericEntityManager{
 		return $valuesAsString;
 	}
 	
-	public function getEntityColumnsAsArray($entity) {
+	public function getEntityColumnsAsArray($entity):array {
 		$reflection = new ReflectionClass($entity);
 		$propertyArray = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
 
 		return $propertyArray;
 	}
 	
-	public function getEntityValuesAsCommaSeperatedUpdateString($entity) {
+	public function getEntityValuesAsCommaSeperatedUpdateString($entity):string {
 		$reflection = new ReflectionClass($entity);
 		$propertyArray = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
 		$valuesAsString = "";
@@ -165,7 +169,7 @@ class GenericEntityManager{
 		return $valuesAsString;
 	}
 	
-	public function getAllTablenames(){
+	public function getAllTablenames():array{
 	    $results_array = array();
 	
 	    $sql = "select table_name from information_schema.tables where table_schema='".Constants::$databaseName."';";

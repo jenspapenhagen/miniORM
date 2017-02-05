@@ -3,12 +3,7 @@
 class Evaluator{
 
 
-	public function Evaluator(){
-
-	}
-
-
-	function binaercheck($input) {
+	function binaercheck(int $input):bool {
 		
 		$maxchar = 1;
 		if (!$this->checkForNumbers($input) || $this->MaxInputLimitCheck($input, $maxchar) == false || !is_null($input) || $input > 1 || $input < 0) {
@@ -17,18 +12,9 @@ class Evaluator{
 	
 		return true;
 	}
-	
-	function emptycheck($input) {
-		if (empty($input)) {
-			return true;
-		}
-		return false;
-	}
-	
-	
-	
 
-	function stripper($input) {
+
+	function stripper(string $input):string {
 	    $output = '';
 		foreach (array(' ', '&nbsp;', '\n', '\t', '\r') as $strip){
 			$output = str_replace($strip, '', (string) $input);
@@ -42,7 +28,7 @@ class Evaluator{
 	}
 	 
 
-	function GetSuchAlgorithmen($input) {
+	function GetSuchAlgorithmen(string $input):string {
 		switch ($input) {
 			case "LowercaseLettersAndNumbers":
 				$output = "a-z0-9";
@@ -75,7 +61,7 @@ class Evaluator{
 	}
 
 	//check for input
-    function checkFor($input, $SuchAlgorithmen="GermanLetter", $minlength=0, $maxlength=60){
+    function checkFor(string $input,string $SuchAlgorithmen="GermanLetter",int $minlength=0,int $maxlength=60):bool {
 		if($this->emptycheck($input)){
 			echo "no input";
 			die();
@@ -96,7 +82,7 @@ class Evaluator{
 	}
 
 	//return only strict input
-    function returnOnly($input, $SuchAlgorithmen="GermanLetter", $minlength=0, $maxlength=60){
+    function returnOnly(string $input,string $SuchAlgorithmen="GermanLetter",int $minlength=0,int $maxlength=60):string{
         if($this->emptycheck($input)){
             echo "no input";
             die();
@@ -115,7 +101,7 @@ class Evaluator{
 	}
 
 	//lengths
-	function MinInputLimit($input,$minchar) {
+	function MinInputLimit(string $input,int $minchar):bool {
 		if (strlen($input) < $minchar ){
 			return false;
 		}
@@ -123,7 +109,7 @@ class Evaluator{
 		return true;
 	}
 
-	function MaxInputLimit($input, $maxchar) {
+	function MaxInputLimit(string $input,int $maxchar):string {
 		if (strlen($input) > $maxchar ){
 			return $this->cutToMaxInputLimit($input, $maxchar);//force to the right length
 		}
@@ -131,7 +117,7 @@ class Evaluator{
 		return $input;
 	}
 	
-	function MaxInputLimitCheck($input, $maxchar) {
+	function MaxInputLimitCheck(string $input,int $maxchar):bool {
 		if (strlen($input) > $maxchar ){
 			return false;
 		}
@@ -139,14 +125,14 @@ class Evaluator{
 		return true;
 	}
 
-	function cutToMaxInputLimit($input,$maxchar) {
+	function cutToMaxInputLimit(string $input,int $maxchar):string {
 		$output = substr($input,0,$maxchar);
 
 		return $output;
 	}
 
 	//date
-	function date($input) {
+	function date(string $input):bool {
 		if ($this->stripper($input) == false){
 			return false;
 		}
@@ -158,7 +144,7 @@ class Evaluator{
 		return true;
 	}
 
-	function dateUS($input) {
+	function dateUS(string $input):bool {
 		if ($this->stripper($input) == false){
 			return false;
 		}
@@ -173,7 +159,7 @@ class Evaluator{
 
 
 	//time
-	function time($input) {
+	function time(string $input):bool {
 		$minchar = "4"; //0:01
 		$maxchar = "5"; //21:01
 
@@ -190,7 +176,7 @@ class Evaluator{
 
 	}
 
-	function timeMil($input) {
+	function timeMil(string $input):bool {
 		$minchar = "1"; //0
 		$maxchar = "4"; //2100
 
@@ -208,7 +194,7 @@ class Evaluator{
 	}
 
 	//money
-	function money($input) {
+	function money(string $input):bool {
 		$money = preg_match("/^[0-9]+(?:\\,[0-9]{0,2})?$/", $input);
 
 		if ( $money == false ) {
@@ -218,7 +204,7 @@ class Evaluator{
 		return true;
 	}
 
-	function moneyUS($input) {
+	function moneyUS(string $input):bool {
 		$money = preg_match("/^[0-9]+(?:\\.[0-9]{0,2})?$/", $input);
 
 		if ( $money == false ) {
@@ -228,7 +214,7 @@ class Evaluator{
 		return true;
 	}
 	//japan only have Yen
-	function moneyJap($input) {
+	function moneyJap(string $input):bool {
 		$money = $this->returnOnly("Numbers",$input);
 		if ( $money == false ) {
 			return false;
@@ -237,7 +223,7 @@ class Evaluator{
 		return true;
 	}
 	 
-	function URL($input) {
+	function URL(string $input):bool {
 		if ($this->stripper($input) !== false) {
 			if (filter_var($input, FILTER_VALIDATE_URL == false)){
 				return false;
@@ -248,7 +234,7 @@ class Evaluator{
 
 	}
 
-	function Email($input) {
+	function Email(string $input):bool {
 		if ($this->stripper($input) !== false) {
 			if (!filter_var($input, FILTER_VALIDATE_EMAIL)){
 				return false;
@@ -258,7 +244,7 @@ class Evaluator{
 
 	}
 
-	function EmailConfirm($input1 ,$input2){
+	function EmailConfirm(string $input1 ,string $input2):bool{
 		if (strcmp($input1, $input2) !== 0) {
 			return false;
 		}

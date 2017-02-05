@@ -63,7 +63,7 @@ class ConnectionProvider {
 	 * @param bool $SQLoverSSL
 	 * @return array
      */
-	public function setSSL($SQLoverSSL = false){
+	public function setSSL(bool $SQLoverSSL = false):array{
 	    $setSSL = '';
 	    if ($SQLoverSSL){
     	    $setSSL = array(

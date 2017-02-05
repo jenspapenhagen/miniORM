@@ -3,8 +3,12 @@ include_once (dirname(__FILE__)."/../datamodel/datamanager/GenericEntityManager.
 
 class EntityManagerSqlLite extends GenericEntityManager {
 
+    public function __construct(GenericEntity $entity){
+        parent::__construct($entity);
+    }
+
 	public function EntityManagerSqlLite(GenericEntity $entity) {
-		parent::__construct($entity);
+        self::__construct($entity);
 	}
 
 }
