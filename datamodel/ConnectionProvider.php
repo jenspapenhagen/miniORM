@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-include_once (dirname(__FILE__)."/../datamodel/Constants.php");
 
 class ConnectionProvider {
 	protected static $connection;
@@ -45,11 +44,16 @@ class ConnectionProvider {
 		            echo "Unsuportted DB Driver! Check the configuration in Constants.php";
 		            exit(1);
 		    }
+			
+		    if(Constants::$SQLoverSSL){
+				self::$connection = new PDO($connectionTyp, Constants::$databaseUser, Constants::$databasePass, $this->SQLoverSSL(true));
+			}else{
+				self::$connection = new PDO($connectionTyp, Constants::$databaseUser, Constants::$databasePass);
+			}
 		    
-		    self::$connection = new PDO($connectionTyp, Constants::$databaseUser, Constants::$databasePass, $this->SQLoverSSL());
 		    
 			self::$connection->setAttribute = array(
-			    PDO::ATTR_PERSISTENT    =>ture, 
+			    PDO::ATTR_PERSISTENT    =>true,
 			    PDO::ATTR_ERRMODE, 
 			    PDO::ERRMODE_EXCEPTION);
 		}catch (PDOException $e) {
@@ -58,11 +62,10 @@ class ConnectionProvider {
 		}
 	}
 
+    public function ConnectionProvider(){
+        self::__construct();
+    }
 
-	/**
-	 * @param bool $SQLoverSSL
-	 * @return array
-     */
 	public function setSSL(bool $SQLoverSSL = false):array{
 	    $setSSL = '';
 	    if ($SQLoverSSL){
