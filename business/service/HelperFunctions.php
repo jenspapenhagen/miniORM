@@ -118,30 +118,7 @@ class HelperFunctions {
     }
     
     
-    public function convertType(string $type, $value): bool | int | float | string{
-        switch ($type) {
-            case 'bool':
-            case 'boolean':
-                return boolval($value);
-    
-            case 'int':
-            case 'integer':
-            case 'number':
-                return intval($value);
-    
-            case 'float':
-            case 'double':
-            case 'real':
-            case 'decimal':
-                return doubleval($value);
-    
-            case 'string':
-                return strval($value);
-            }
-    
 
-    }
-    
     
     public function CleanXMLString(string $value):string{
         if (empty($value)) {
